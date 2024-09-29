@@ -38,7 +38,7 @@ Morning Routine Automation
 - **Security System Monitoring**: <u>Surveillance Camera System</u> records outdoor movement while the Door Lock System remains secure.
 - **Status Updates**: The <u>Homeowner</u> receives a routine completion notification from the <u>App</u>.
 
-## Sequence Diagrama - Morning Routine Automation
+## Sequence Diagram - Morning Routine Automation
 ```mermaid
 sequenceDiagram
     participant ho as Homeowner
@@ -58,23 +58,54 @@ sequenceDiagram
         loop Home Automation Hub
             hah->>hah: Check for scheduled routines
             Note right of hah: Read every single stablished routine
-            alt Is routine Light Control System
+            alt Is routine Light Control System ? 
                 hah-->>lcs: Apply settings
                 hah-->>lcs: Activate
+                par Adjust brightness
+                    lcs->>lcs: Read current ambient light
+                    lcs->>lcs: Increase or decrease ambient light based in settings
+                    lcs-->>hah:Send back status routine completion
+                end
+                
             else Other type
-                alt Is routine Thermostat System
+                alt Is routine Thermostat System ? 
                     hah-->>ts: Apply settings
                     hah-->>ts: Activate
+                    par Adjust temperature
+                        ts->>ts: Read current ambient temperature
+                        ts->>ts: Increase or decrease temperature
+                        ts->>ts: Apply changes based in settings
+                        ts-->>hah:Send back status routine completion
+                    end
                 else Other type
-                    alt Is routine Appliance Control System
+                    alt Is routine Appliance Control System ?
                         hah-->>acs: Apply settings
                         hah-->>acs: Activate
+                        par Turn on appliances
+                            loop Inactive appliances
+                                acs->>acs: Check current time
+                                    alt Is it time to activate ? 
+                                        acs->>acs: Turn on inactive appliance
+                                        acs->>hah: Notify appliance status
+                                    end
+                                acs-->>hah:Send back status routine completion
+                            end 
+                        end
                     else Surveillance Camera System
                         hah-->>scs: Apply settings
                         hah-->>scs: Activate
+                        par Checking door movement
+                            loop Checking door movement
+                                alt Is there any movement ?
+                                    scs-->>hah:Send back status door movement
+                                end
+                            end
+                            scs-->>hah:Send back status routine completion
+                        end
                     end
                 end
             end
         end
+        hah-->>a:Send back notification 
     end
 ```
