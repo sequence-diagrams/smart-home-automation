@@ -112,7 +112,6 @@ The _Home Automation Hub_ receives the request and relays the command to the _Li
 
 **Notification**: The _Home Automation Hub_ can notify the _Smart Home App_ or the Voice Assistant of the successful shutdown, confirming to the Homeowner that all lights are off.
 
-
 ## Sequence Diagram - Light Control Shutdown
 ```mermaid
 sequenceDiagram
@@ -137,5 +136,112 @@ sequenceDiagram
         end
         
     end
+```
+
+# Sequence #: Enhanced Home Security Alert with Light Control Shutdown
+This scenario combines the security features of motion detection with smart lighting to enhance home security during the night.
+When movement is detected outside the house, external lights are activated, the homeowner is alerted, and they can take actions such as viewing live footage, locking or unlocking doors, or dismissing the alert if no action is needed.
+
+Entities:
+- Surveillance Camera System
+- Security System
+- Homeowner
+- Smart Home App
+- Door Lock System
+- Light Control System (+)
+- Emergency Services (+)
+
+# Sequence
+1. **Movement detection:** The **Surveillance Camera System** detects movement and triggers the **Security System.**
+2. **Lighting control:** The **Security System** activates the **Light Control System**, which turns on external lights to improve visibility outside.
+3. **Alerting the homeowner:** The **Security System** sends an alert to the **Homeowner** via the **Smart Home App**, and the **Homeowner** checks the live footage to assess the situation.
+4. **Decision-making:** The **Homeowner** has three possible actions:
+  - **No action:** If it's a false alarm, they can dismiss the alert.
+  - **Lock/unlock door:** If the **Homeowner** deems it necessary, they can lock or unlock doors using the **Door Lock System**, and receive confirmation.
+  - **Contact emergency services:** The **Homeowner** can contact the police or emergency services, who will acknowledge the request.
+5. **Lights turn off:** After a set period of inactivity, the **Light Control System** automatically turns off the external lights unless more movement is detected.
+6. **Ongoing updates:** The **Security System** continues to monitor and provide updates to the **Homeowner** via the **Smart Home App.**
+
+## Sequence: Enhanced Home Security Alert with Nighttime Lighting Control
+
+```mermaid
+sequenceDiagram
+    participant Cam as Surveillance Camera System
+    participant S as Security System
+    participant L as Light Control System
+    participant H as Homeowner
+    participant App as Smart Home App
+    participant D as Door Lock System
+    participant ES as Emergency Services
+
+    Cam->>S: Detect movement
+    S->>L: Turn on external lights
+    S->>App: Send alert to Homeowner
+    H->>App: Check live footage
+    App->>H: Display live footage
+    alt Action Needed
+        H->>D: Lock/unlock door
+        D->>H: Confirmation of door action
+    else Emergency Services Needed
+        H->>ES: Contact emergency services
+        ES->>H: Acknowledge emergency
+    else No Action Needed
+        H->>App: Dismiss alert
+        App->>S: Resume normal operation
+    end
+    L->>L: Turn off lights after set period
+    S->>App: Provide ongoing security updates
+```
+
+## Sequence 3: Home Security Alert
+
+### Entities
+- Surveillance Camera System
+- Security System
+- Homeowner
+- Smart Home App
+- Door Lock System
+- Emergency Services (+)
+
+
+## Sequence:
+
+1. **Surveillance Camera System** detects movement near the door and sends a signal to the **Security System**.
+2. **Security System** sends an alert to the **Homeowner** via the **Smart Home App**.
+3. **Homeowner** checks live footage using the **Smart Home App**.
+4. **Homeowner** decides:
+  - If no action is required, the system resumes normal operation.
+  - If action is needed, the **Homeowner** chooses to lock/unlock the door or contact emergency services.
+5. If the **Homeowner** locks/unlocks the door, the **Door Lock System** carries out the command and sends a confirmation back to the **Homeowner**.
+6. If emergency services are contacted, the **Smart Home App** provides necessary information to the authorities.
+7. The **Homeowner** receives ongoing updates from the Security System as the situation develops.
+
+
+### Sequence Diagram - Home Security Alert
+
+```mermaid
+sequenceDiagram
+    participant Cam as Surveillance Camera System
+    participant S as Security System
+    participant H as Homeowner
+    participant App as Smart Home App
+    participant D as Door Lock System
+    participant ES as Emergency Services
+
+    Cam->>S: Detect movement
+    S->>App: Send alert to Homeowner
+    H->>App: Check live footage
+    App->>H: Display live footage
+    alt Action Needed
+        H->>D: Lock/unlock door
+        D->>H: Confirmation of door action
+    else Emergency Services Needed
+        H->>ES: Contact emergency services
+        ES->>H: Acknowledge emergency
+    else No Action Needed
+        H->>App: Dismiss alert
+        App->>S: Resume normal operation
+    end
+    S->>App: Provide ongoing updates
 ```
 
