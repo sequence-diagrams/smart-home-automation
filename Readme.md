@@ -244,4 +244,77 @@ sequenceDiagram
     end
     S->>App: Provide ongoing updates
 ```
+### Sequence Diagram - Leaving the house
+```mermaid
+sequenceDiagram
+    participant Homeowner
+    participant VoiceAssistant
+    participant LightControlSystem
+    participant ThermostatSystem
+    participant SecuritySystem
+    participant DoorLockSystem
+    participant SurveillanceCameraSystem
+    participant ApplianceControlSystem
+    participant SmartHomeApp
+    Homeowner->>VoiceAssistant: Activate "Leaving Home" mode
+    par
+        VoiceAssistant->>LightControlSystem: Turn off all lights
+        VoiceAssistant->>ThermostatSystem: Switch to energy-saving mode
+    and
+        VoiceAssistant->>SecuritySystem: Activate security system
+    end
+    LightControlSystem-->>VoiceAssistant: Confirmation: Lights off
+    ThermostatSystem-->>VoiceAssistant: Confirmation: Thermostat set to energy-saving mode
+    SecuritySystem->>DoorLockSystem: Lock all doors
+    SecuritySystem->>SurveillanceCameraSystem: Activate surveillance cameras
+    DoorLockSystem-->>SecuritySystem: Confirmation: Doors locked
+    SurveillanceCameraSystem-->>SecuritySystem: Confirmation: Cameras activated
+    SecuritySystem-->>VoiceAssistant: Security system activated
+    loop Check Appliances
+        VoiceAssistant->>ApplianceControlSystem: Turn off non-essential appliances
+        ApplianceControlSystem-->>VoiceAssistant: Confirmation: Appliances turned off
+    end
+    VoiceAssistant->>SmartHomeApp: Send security confirmation
+    SmartHomeApp-->>Homeowner: Your house is secure!
+    alt Additional Security Checks
+        VoiceAssistant->>SecuritySystem: Check if all systems are secure
+        SecuritySystem-->>VoiceAssistant: All systems secure.
+    else No Additional Checks
+        VoiceAssistant->>Homeowner: No additional checks needed.
+    end
+```
+### Sequence Diagram - Sleeoing Routine
+```mermaid
+sequenceDiagram
+    participant Homeowner
+    participant VoiceAssistant
+    participant LightControlSystem
+    participant ThermostatSystem
+    participant SecuritySystem
+    participant ApplianceControlSystem
+    participant SmartHomeApp
+    Homeowner->>VoiceAssistant: Activate "Sleep Mode"
+    par
+        VoiceAssistant->>LightControlSystem: Dim lights
+        VoiceAssistant->>ThermostatSystem: Set temperature to sleep mode
+    and
+        VoiceAssistant->>SecuritySystem: Arm security system
+    end
+    LightControlSystem-->>VoiceAssistant: Confirmation: Lights dimmed
+    ThermostatSystem-->>VoiceAssistant: Confirmation: Temperature set
+    SecuritySystem-->>VoiceAssistant: Confirmation: Security armed
+    loop Check Appliances
+        VoiceAssistant->>ApplianceControlSystem: Turn off non-essential appliances
+        ApplianceControlSystem-->>VoiceAssistant: Confirmation: Appliances turned off
+    end
+    VoiceAssistant->>SmartHomeApp: Send "Sleep Mode" activation confirmation
+    SmartHomeApp-->>Homeowner: Your sleeping routine is set!
+    alt Additional Requests
+        VoiceAssistant->>Homeowner: Any other requests?
+        Homeowner-->>VoiceAssistant: Yes, play sleep sounds.
+        VoiceAssistant->>SmartHomeApp: Play sleep sounds
+    else No Additional Requests
+        VoiceAssistant->>Homeowner: Good night!
+    end
+```
 
