@@ -32,11 +32,11 @@ Entities:
 ## Sequence 1: 
 
 Morning Routine Automation
-- **Triggering Automation**: <u>Homeowner</u> schedules a morning routine through the <u>Smart Home App</u>, and the <u>App</u> communicates with the <u>Home Automation Hub</u> to initiate the routine.
-- **Light and Temperature Adjustments**: The <u>Home Automation Hub</u> sends a command to the <u>Light Control System</u> to gradually increase brightness, and the <u>Thermostat System</u> adjusts to the preferred morning temperature.
-- **Appliance Activation**: The <u>Appliance Control System</u> turns on the coffee maker and other appliances as scheduled.
-- **Security System Monitoring**: <u>Surveillance Camera System</u> records outdoor movement while the Door Lock System remains secure.
-- **Status Updates**: The <u>Homeowner</u> receives a routine completion notification from the <u>App</u>.
+- **Triggering Automation**: _Homeowner_ schedules a morning routine through the _Smart Home App_, and the _App_ communicates with the _Home Automation Hub_ to initiate the routine.
+- **Light and Temperature Adjustments**: The _Home Automation Hub_ sends a command to the _Light Control System_ to gradually increase brightness, and the _Thermostat System_ adjusts to the preferred morning temperature.
+- **Appliance Activation**: The _Appliance Control System_ turns on the coffee maker and other appliances as scheduled.
+- **Security System Monitoring**: _Surveillance Camera System_ records outdoor movement while the Door Lock System remains secure.
+- **Status Updates**: The _Homeowner_ receives a routine completion notification from the _App_.
 
 ## Sequence Diagram - Morning Routine Automation
 ```mermaid
@@ -51,61 +51,91 @@ sequenceDiagram
 
     par Add new routine
         ho->>a:Select new routine
-        a->>ho:Show the list of possible routines
+        a-->>ho:Show the list of possible routines
         ho->>a:Confirm the specific routine
         a->>hah:Record the new routine
     and Trigger routine
         loop Home Automation Hub
             hah->>hah: Check for scheduled routines
             Note right of hah: Read every single stablished routine
-            alt Is routine Light Control System ? 
+            par Light Control System Routine
                 hah-->>lcs: Apply settings
-                hah-->>lcs: Activate
-                par Adjust brightness
-                    lcs->>lcs: Read current ambient light
-                    lcs->>lcs: Increase or decrease ambient light based in settings
-                    lcs-->>hah:Send back status routine completion
-                end
-                
-            else Other type
-                alt Is routine Thermostat System ? 
-                    hah-->>ts: Apply settings
-                    hah-->>ts: Activate
-                    par Adjust temperature
-                        ts->>ts: Read current ambient temperature
-                        ts->>ts: Increase or decrease temperature
-                        ts->>ts: Apply changes based in settings
-                        ts-->>hah:Send back status routine completion
-                    end
-                else Other type
-                    alt Is routine Appliance Control System ?
-                        hah-->>acs: Apply settings
-                        hah-->>acs: Activate
-                        par Turn on appliances
-                            loop Inactive appliances
-                                acs->>acs: Check current time
-                                    alt Is it time to activate ? 
-                                        acs->>acs: Turn on inactive appliance
-                                        acs->>hah: Notify appliance status
-                                    end
-                                acs-->>hah:Send back status routine completion
-                            end 
+                lcs->>lcs: Adjust brightness
+                lcs-->>hah: Send back status routine completion
+                hah-->>a: Send back notification
+            and Thermostat System Routine
+                hah->>ts: Apply settings
+                ts->>ts: Adjust temperature
+                ts-->>hah:Send back status routine completion
+                hah-->>a: Send back notification
+            and Appliance Control System Routine
+                hah->>acs: Apply settings
+                loop Active any appliance in the list
+                    acs->>acs: Check current time
+                        alt Is it time to activate ? 
+                            acs->>acs: Turn on inactive appliance
+                            acs->>hah: Notify appliance status
                         end
-                    else Surveillance Camera System
-                        hah-->>scs: Apply settings
-                        hah-->>scs: Activate
-                        par Checking door movement
-                            loop Checking door movement
-                                alt Is there any movement ?
-                                    scs-->>hah:Send back status door movement
-                                end
-                            end
-                            scs-->>hah:Send back status routine completion
-                        end
+                end 
+                acs-->>hah:Send back status routine completion
+                hah-->>a: Send back notification
+            and Surveillance Camera System Routine
+                hah->>scs: Apply settings
+                loop Checking door movement
+                    alt Is there any movement ?
+                        scs-->>hah:Send back status door movement
                     end
                 end
+                scs-->>hah:Send back status routine completion
+                hah-->>a:Send back notification 
             end
         end
-        hah-->>a:Send back notification 
     end
 ```
+## Sequence 6:  Light Control Shutdown
+
+This simple case illustrates how a homeowner can easily turn off all lights in a smart home using voice commands
+
+**Initiate Shutdown Command**: The _Homeowner_ issue a command "Turn off all lights" through his or her voice.
+
+**Voice Activation**: The _Voice Assistance_ is listening and processing every sound that it catches.
+
+**Command Processing**: The _Voice Assistant_ processes the command and sends a shutdown request to the _Home Automation Hub_.
+
+**Relay Command to Light Control System**:
+
+The _Home Automation Hub_ receives the request and relays the command to the _Light Control System_.
+
+**Execute Shutdown**: The _Light Control System_ turns off all connected lights.
+
+**Status Update**: The _Light Control System_ sends a confirmation back to the Home Automation Hub that all lights have been turned off.
+
+**Notification**: The _Home Automation Hub_ can notify the _Smart Home App_ or the Voice Assistant of the successful shutdown, confirming to the Homeowner that all lights are off.
+
+
+## Sequence Diagram - Light Control Shutdown
+```mermaid
+sequenceDiagram
+    participant ho as Homeowner
+    participant a as App
+    participant va as Voice Assistant
+    participant hah as Home Automation Hub
+    participant lcs as Light Control System
+    
+
+    par Issue a command
+        ho->>va:Issue a command
+
+    and Voice Assitant
+        va->>va: Proccess any sound and extract any command
+        alt Was a command detected
+            va->>hah: Send a shutdown request of lights
+            hah->>lcs: Send "turn off" command to all connected lights
+            lcs->>lcs: Turn off any light
+            lcs-->>hah: Update status
+            hah-->>a: Send the notification
+        end
+        
+    end
+```
+
